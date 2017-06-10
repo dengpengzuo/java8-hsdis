@@ -32,6 +32,12 @@ OpenJDK disassembler plugin for HotSpot JVM (based on binutils)
     + Build package
     ```
     make all
+    cp ./build/${os}-${arch}/hsdis-${arch}.so ${JAVA_HOME}/jre/lib
+    ```
+
+    + Install hsdis
+    ```
+    cp ./build/${os}-${arch}/hsdis-${arch}.so ${JAVA_HOME}/jre/lib
     ```
 
     Enjoy your disassembler
