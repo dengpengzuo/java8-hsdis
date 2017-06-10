@@ -15,7 +15,7 @@ LIB_EXT		= .so
 CC 			= gcc
 CFLAGS		+= -Wall
 DLDFLAGS	+= -shared
-LDFLAGS     += -lltdl
+LDFLAGS     += -ldl
 OUTFLAGS	+= -s -O2 -o $@
 
 LIBARCH		= $(ARCH)

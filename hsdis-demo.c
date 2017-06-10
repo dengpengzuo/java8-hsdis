@@ -31,7 +31,7 @@
 #include <stdlib.h>
 #include <string.h>
 /* don't disassemble after this point... */
-#include <ltdl.h>
+#include <dlfcn.h>
 
 void greet(const char*);
 void disassemble(void*, void*);
@@ -40,7 +40,7 @@ void end_of_file();
 const char* options = NULL;
 int         raw     = 0;
 int         xml     = 0;
-lt_dlhandle dllib   = NULL;
+void      *dllib   = NULL;
 
 int main(int ac, char** av) {
   int greeted = 0;
@@ -71,12 +71,10 @@ int main(int ac, char** av) {
   start = *((void**)start);
   end = *((void**)end);
 #endif
-  lt_dlinit();
   disassemble(start, (end > start) ? end : start + 256);
   printf("Cheers!\n");
   if(dllib != NULL)
-      lt_dlclose(dllib);
-  lt_dlexit();
+      dlclose(dllib);
 }
 
 void greet(const char* whom) {
@@ -100,7 +98,7 @@ static const char* hsdis_path[] = {
 static const char* load_decode_instructions() {
   const char* *next_in_path = hsdis_path;
   while (1) {
-    decode_instructions_pv = lt_dlsym(dllib, DECODE_INSTRUCTIONS_NAME);
+    decode_instructions_pv = dlsym(dllib, DECODE_INSTRUCTIONS_NAME);
     if (decode_instructions_pv != NULL)
       return NULL;
     if (dllib != NULL)
@@ -109,7 +107,7 @@ static const char* load_decode_instructions() {
       const char* next_lib = (*next_in_path++);
       if (next_lib == NULL)
         return "cannot find plugin "HSDIS_NAME LIB_EXT;
-      dllib = lt_dlopen (next_lib);
+      dllib = dlopen (next_lib, RTLD_NOW);
     }
   }
 }
@@ -197,7 +195,7 @@ static void* handle_event(void* cookie, const char* event, void* arg) {
 void disassemble(void* from, void* to) {
   const char* err = load_decode_instructions();
   if (err != NULL) {
-    printf("%s: %s\n", err, lt_dlerror());
+    printf("%s: %s\n", err, dlerror());
     exit(1);
   }
   printf("Decoding from %p to %p...\n", from, to);
