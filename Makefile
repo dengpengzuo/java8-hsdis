@@ -1,5 +1,5 @@
 # Single gnu makefile for solaris, linux and windows (windows requires cygwin and mingw)
-# author zuo deng peng.
+# author: zuo deng peng.
 #   date 2017-5-21 
 # Default arch; it is changed below as needed.
 ARCH		= i386
@@ -7,7 +7,7 @@ OS			= $(shell uname -o)
 
 ## OS = Linux ##
 CPU         = $(shell uname -m)
-ARCH		=amd64
+ARCH		= amd64
 CFLAGS		+= $(CFLAGS/$(ARCH))
 CFLAGS		+= -fPIC
 OS			= linux
@@ -17,7 +17,6 @@ CFLAGS		+= -Wall
 DLDFLAGS	+= -shared
 LDFLAGS     += -lltdl
 OUTFLAGS	+= -s -O2 -o $@
-
 
 LIBARCH		= $(ARCH)
 JDKARCH		= $(ARCH)
